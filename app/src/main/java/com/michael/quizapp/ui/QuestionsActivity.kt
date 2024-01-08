@@ -1,5 +1,6 @@
 package com.michael.quizapp.ui
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
@@ -22,6 +23,8 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
     private var selectedAnswer = 0
     private lateinit var currentQuestion: Question
     private var answered = false
+    private lateinit var name: String
+    private var score = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,23 +40,15 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
         questionsList = Constants.getQuestions()
         showNextQuestion()
+
+        if (intent.hasExtra(Constants.USER_NAME)) {
+            name = intent.getStringExtra(Constants.USER_NAME).toString()
+//            name = intent.getStringExtra(Constants.USER_NAME)!!
+        }
     }
 
     //    private fun showNextQuestion() {
     private fun showNextQuestion() {
-        resetOptions()
-        val question = questionsList[questionsCounter]
-        binding.flagImage.setImageResource(question.image)
-        binding.progressBar.progress = questionsCounter
-        binding.textViewProgress.text = "${questionsCounter + 1}/${binding.progressBar.max}"
-        binding.textViewOptionOne.text = question.optionOne
-        binding.textViewOptionTwo.text = question.optionTwo
-        binding.textViewOptionThree.text = question.optionThree
-        binding.textViewOptionFour.text = question.optionFour
-
-        // Change progress bar color:
-        binding.progressBar.progressDrawable.setTintList(ColorStateList.valueOf(Color.BLACK))
-
 
         /*   if (questionsCounter < questionsList.size) {
                binding.checkButton.text = "CHECK"
@@ -66,10 +61,29 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
             questionsCounter < questionsList.size -> {
                 binding.checkButton.text = "CHECK"
                 currentQuestion = questionsList[questionsCounter]
+
+                resetOptions()
+                val question = questionsList[questionsCounter]
+                binding.flagImage.setImageResource(question.image)
+                binding.progressBar.progress = questionsCounter
+                binding.textViewProgress.text = "${questionsCounter + 1}/${binding.progressBar.max}"
+                binding.textViewOptionOne.text = question.optionOne
+                binding.textViewOptionTwo.text = question.optionTwo
+                binding.textViewOptionThree.text = question.optionThree
+                binding.textViewOptionFour.text = question.optionFour
+
+                // Change progress bar color:
+                binding.progressBar.progressDrawable.setTintList(ColorStateList.valueOf(Color.BLACK))
             }
 
             else -> {
                 binding.checkButton.text = "FINISH"
+                Intent(this@QuestionsActivity, ResultActivity::class.java).also {
+                    it.putExtra(Constants.USER_NAME, name)
+                    it.putExtra(Constants.SCORE, score)
+                    it.putExtra(Constants.TOTAL_QUESTIONS, questionsList.size)
+                    startActivity(it)
+                }
             }
         }
 
@@ -150,6 +164,7 @@ class QuestionsActivity : AppCompatActivity(), View.OnClickListener {
 
         if (selectedAnswer == currentQuestion.correctAnswer) {
             highlightCorrectAnswer(selectedAnswer)
+            score++
         } else {
             highlightWrongAnswer(selectedAnswer)
         }

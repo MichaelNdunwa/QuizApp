@@ -6,6 +6,7 @@ import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import com.michael.quizapp.databinding.ActivityMainBinding
 import com.michael.quizapp.ui.QuestionsActivity
+import com.michael.quizapp.utils.Constants
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
         binding.startButton.setOnClickListener {
             if (binding.name.text!!.isNotEmpty() && binding.email.text!!.isNotEmpty()) {
                 Intent(this@MainActivity, QuestionsActivity::class.java).also {
+                    it.putExtra(Constants.USER_NAME, binding.name.text.toString())
                     startActivity(it)
                     finish()
                 }

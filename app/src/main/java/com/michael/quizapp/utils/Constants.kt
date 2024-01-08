@@ -5,6 +5,9 @@ import com.michael.quizapp.model.Question
 
 object Constants {
 
+    const val USER_NAME = "user_name"
+    const val TOTAL_QUESTIONS = "total_questions"
+    const val SCORE = "score"
     fun getQuestions(): MutableList<Question> {
         val question = mutableListOf<Question>()
 
